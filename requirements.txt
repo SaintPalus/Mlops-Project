@@ -1,0 +1,9 @@
+pandas>=2.2
+numpy>=1.26
+torch>=2.4
+mlflow>=2.14
+prefect>=2.20
+fastapi>=0.111
+uvicorn[standard]>=0.30
+streamlit>=1.36
+requests>=2.32

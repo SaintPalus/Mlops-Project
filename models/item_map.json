@@ -1,0 +1,42 @@
+{
+  "Bread": {
+    "idx": 0,
+    "mean": 20.9
+  },
+  "Brownie": {
+    "idx": 1,
+    "mean": 4.5
+  },
+  "Cake": {
+    "idx": 2,
+    "mean": 7.0
+  },
+  "Coffee": {
+    "idx": 3,
+    "mean": 34.6
+  },
+  "Cookies": {
+    "idx": 4,
+    "mean": 3.8
+  },
+  "Hot chocolate": {
+    "idx": 5,
+    "mean": 4.0
+  },
+  "Medialuna": {
+    "idx": 6,
+    "mean": 4.7
+  },
+  "Pastry": {
+    "idx": 7,
+    "mean": 5.7
+  },
+  "Sandwich": {
+    "idx": 8,
+    "mean": 5.0
+  },
+  "Tea": {
+    "idx": 9,
+    "mean": 9.1
+  }
+}
