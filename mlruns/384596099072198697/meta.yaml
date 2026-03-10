@@ -1,0 +1,7 @@
+artifact_location: file:C:/Users/saint/Desktop/Vs Code/MLOPS Project/mlruns/384596099072198697
+creation_time: 1773094520736
+experiment_id: '384596099072198697'
+last_update_time: 1773094520736
+lifecycle_stage: active
+name: food-waste-prediction
+workspace: default

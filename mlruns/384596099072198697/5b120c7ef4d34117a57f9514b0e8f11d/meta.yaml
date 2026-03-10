@@ -1,0 +1,14 @@
+artifact_uri: file:C:/Users/saint/Desktop/Vs Code/MLOPS Project/mlruns/384596099072198697/5b120c7ef4d34117a57f9514b0e8f11d/artifacts
+end_time: 1773102974204
+entry_point_name: ''
+experiment_id: '384596099072198697'
+lifecycle_stage: active
+run_id: 5b120c7ef4d34117a57f9514b0e8f11d
+run_name: linear_regression_with_item
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1773102974159
+status: 3
+tags: []
+user_id: saint

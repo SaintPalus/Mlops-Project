@@ -1,0 +1,14 @@
+artifact_uri: file:C:/Users/saint/Desktop/Vs Code/MLOPS Project/mlruns/384596099072198697/3878fb0c0f4846438fb7a3ee79ae4e8b/artifacts
+end_time: 1773104083680
+entry_point_name: ''
+experiment_id: '384596099072198697'
+lifecycle_stage: active
+run_id: 3878fb0c0f4846438fb7a3ee79ae4e8b
+run_name: normalized_day_pattern_model
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1773104083630
+status: 3
+tags: []
+user_id: saint
