@@ -15,7 +15,8 @@ st.set_page_config(
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
     st.title("ระบบพยากรณ์อาหาร")
-    st.markdown("**ผู้พัฒนา:** Palat Kaew-aram  \n**รหัสนักศึกษา:** 66070131")
+    st.markdown("**ผู้พัฒนา:** Palus Kaewaram  \n**รหัสนักศึกษา:** 66070131")
+    st.markdown("**ผู้คิดระบบและการทำงาน:** Natthapol Aiemburanont  \n**รหัสนักศึกษา:** 66070062")
     st.divider()
     st.subheader("SDG 12 — การบริโภคที่รับผิดชอบ")
     st.markdown(
@@ -63,6 +64,9 @@ def fetch_items() -> list[str]:
         return list(ITEM_NAME_TH.keys())
 
 items = fetch_items()
+if not items:
+    items = list(ITEM_NAME_TH.keys())
+
 items_display = [f"{ITEM_NAME_TH.get(i, i)} ({i})" for i in items]
 item_display_to_key = {f"{ITEM_NAME_TH.get(i, i)} ({i})": i for i in items}
 
@@ -75,6 +79,9 @@ with col_date:
     selected_date = st.date_input("เลือกวันที่", value=date.today(), min_value=date(2024, 1, 1))
 with col_item:
     selected_display = st.selectbox("เลือกรายการอาหาร", options=items_display)
+
+if not selected_display:
+    st.stop()
 
 selected_item = item_display_to_key[selected_display]
 
