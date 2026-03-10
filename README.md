@@ -3,7 +3,7 @@
 ระบบพยากรณ์ความต้องการอาหารและวางแผนลดขยะ สำหรับโรงอาหาร
 ตอบโจทย์ **SDG 2 (Zero Hunger)** และ **SDG 12 (Responsible Consumption)**
 
-**Developer:** Palat Kaew-aram | **Student ID:** 66070131
+**Developer:** Palus Kaewaram | **Student ID:** 66070131
 
 ---
 
