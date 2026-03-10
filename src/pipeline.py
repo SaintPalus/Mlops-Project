@@ -22,16 +22,22 @@ MLFLOW_URI = os.getenv(
 
 
 
-# ── Model: 4 features ─────────────────────────────────────────────────────────
+# ── Model: MLP 4 features → hidden layers → 1 output ──────────────────────────
 # features: day_of_week, is_weekend, month_norm, day_norm
-# ยอดขายจริง = model(features) * item_mean_demand
+# ใช้ MLP แทน Linear Regression เพื่อจับ pattern ที่ซับซ้อนขึ้น
 class DemandModel(nn.Module):
     def __init__(self):
         super().__init__()
-        self.linear = nn.Linear(4, 1)
+        self.net = nn.Sequential(
+            nn.Linear(4, 32),
+            nn.ReLU(),
+            nn.Linear(32, 16),
+            nn.ReLU(),
+            nn.Linear(16, 1),
+        )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return self.linear(x)
+        return self.net(x)
 
 
 # ── Pure helpers ──────────────────────────────────────────────────────────────
@@ -123,7 +129,7 @@ def save_model(model: DemandModel, item_map: dict) -> None:
 
 # ── Flow ──────────────────────────────────────────────────────────────────────
 @flow(name="food-waste-training-pipeline")
-def training_pipeline(epochs: int = 300, lr: float = 0.01) -> None:
+def training_pipeline(epochs: int = 1000, lr: float = 0.005) -> None:
     X, y, n_records, item_map = _load_data(DATA_PATH)
     model, mae = _train_model(X, y, epochs, lr)
     log_to_mlflow(model, mae, epochs=epochs, lr=lr, n_records=n_records)

@@ -14,10 +14,16 @@ WASTE_PER_UNIT_KG = 0.35
 class DemandModel(nn.Module):
     def __init__(self):
         super().__init__()
-        self.linear = nn.Linear(4, 1)
+        self.net = nn.Sequential(
+            nn.Linear(4, 32),
+            nn.ReLU(),
+            nn.Linear(32, 16),
+            nn.ReLU(),
+            nn.Linear(16, 1),
+        )
 
     def forward(self, x):
-        return self.linear(x)
+        return self.net(x)
 
 
 # ── Load at startup ───────────────────────────────────────────────────────────
