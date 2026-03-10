@@ -15,15 +15,20 @@ from prefect import flow, task
 MODEL_PATH    = "models/demand_model.pth"
 ITEM_MAP_PATH = "models/item_map.json"  # { item_name: { "idx": int, "mean": float } }
 DATA_PATH     = os.getenv("DATA_PATH", "data/bakery_sales_revised.csv")
-MLFLOW_URI    = os.getenv("MLFLOW_TRACKING_URI", "./mlruns")
+MLFLOW_URI = os.getenv(
+    "MLFLOW_TRACKING_URI",
+    "https://dagshub.com/<username>/mlops-project.mlflow"
+)
 
 
-# ── Model: เรียนรู้ day pattern (2 features เท่านั้น) ─────────────────────────
-# ยอดขายจริง = model(day_of_week, is_weekend) * item_mean_demand
+
+# ── Model: 4 features ─────────────────────────────────────────────────────────
+# features: day_of_week, is_weekend, month_norm, day_norm
+# ยอดขายจริง = model(features) * item_mean_demand
 class DemandModel(nn.Module):
     def __init__(self):
         super().__init__()
-        self.linear = nn.Linear(2, 1)
+        self.linear = nn.Linear(4, 1)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return self.linear(x)
@@ -36,13 +41,15 @@ def _load_data(path: str) -> tuple[torch.Tensor, torch.Tensor, int, dict]:
     df["date"]        = df["date_time"].dt.date
     df["day_of_week"] = df["date_time"].dt.dayofweek
     df["is_weekend"]  = (df["day_of_week"] >= 5).astype(int)
+    df["month_norm"]  = (df["date_time"].dt.month - 1) / 11.0   # normalize 1-12 → 0.0-1.0
+    df["day_norm"]    = (df["date_time"].dt.day   - 1) / 30.0   # normalize 1-31 → 0.0-1.0
 
     top_items = df["Item"].value_counts().head(10).index.tolist()
     df = df[df["Item"].isin(top_items)]
 
     # Daily demand per item
     daily = (
-        df.groupby(["date", "day_of_week", "is_weekend", "Item"])
+        df.groupby(["date", "day_of_week", "is_weekend", "month_norm", "day_norm", "Item"])
         .agg(demand=("Transaction", "count"))
         .reset_index()
     )
@@ -65,7 +72,7 @@ def _load_data(path: str) -> tuple[torch.Tensor, torch.Tensor, int, dict]:
     for name in items_sorted:
         print(f"  {name:20s}: {item_map[name]['mean']:.1f}")
 
-    X = torch.tensor(daily[["day_of_week", "is_weekend"]].values.astype(np.float32))
+    X = torch.tensor(daily[["day_of_week", "is_weekend", "month_norm", "day_norm"]].values.astype(np.float32))
     y = torch.tensor(daily[["demand_norm"]].values.astype(np.float32))
     return X, y, len(daily), item_map
 
@@ -95,7 +102,7 @@ def log_to_mlflow(model: DemandModel, mae: float, epochs: int, lr: float, n_reco
         mlflow.log_params({
             "epochs": epochs,
             "lr": lr,
-            "features": "day_of_week, is_weekend",
+            "features": "day_of_week, is_weekend, month_norm, day_norm",
             "target": "demand_normalized_by_item_mean",
             "data_source": DATA_PATH,
             "n_training_records": n_records,

@@ -14,7 +14,7 @@ WASTE_PER_UNIT_KG = 0.35
 class DemandModel(nn.Module):
     def __init__(self):
         super().__init__()
-        self.linear = nn.Linear(2, 1)
+        self.linear = nn.Linear(4, 1)
 
     def forward(self, x):
         return self.linear(x)
@@ -59,18 +59,24 @@ def get_items():
 
 
 @app.get("/predict")
-def predict(day_of_week: int, is_weekend: int, item: str):
+def predict(day_of_week: int, is_weekend: int, item: str, month: int = 1, day: int = 1):
     if not (0 <= day_of_week <= 6):
         raise HTTPException(status_code=422, detail="day_of_week must be 0–6")
     if is_weekend not in (0, 1):
         raise HTTPException(status_code=422, detail="is_weekend must be 0 or 1")
+    if not (1 <= month <= 12):
+        raise HTTPException(status_code=422, detail="month must be 1–12")
+    if not (1 <= day <= 31):
+        raise HTTPException(status_code=422, detail="day must be 1–31")
     if item not in item_map:
         raise HTTPException(status_code=422, detail=f"Unknown item. Choose from: {sorted(item_map)}")
 
     item_mean: float = item_map[item]["mean"]
+    month_norm = (month - 1) / 11.0  # normalize 1-12 → 0.0-1.0
+    day_norm   = (day   - 1) / 30.0  # normalize 1-31 → 0.0-1.0
 
     # โมเดลพยากรณ์ normalized pattern (≈1.0) แล้ว scale กลับด้วย item mean จริง
-    x = torch.tensor([[float(day_of_week), float(is_weekend)]])
+    x = torch.tensor([[float(day_of_week), float(is_weekend), month_norm, day_norm]])
     with torch.no_grad():
         norm_factor = float(model(x).item())
 

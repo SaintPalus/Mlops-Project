@@ -93,7 +93,9 @@ if st.button("พยากรณ์ความต้องการ", type="pri
         try:
             resp = requests.get(
                 f"{API_BASE}/predict",
-                params={"day_of_week": day_of_week, "is_weekend": is_weekend, "item": selected_item},
+                params={"day_of_week": day_of_week, "is_weekend": is_weekend,
+                        "item": selected_item, "month": selected_date.month,
+                        "day": selected_date.day},
                 timeout=5,
             )
             resp.raise_for_status()
