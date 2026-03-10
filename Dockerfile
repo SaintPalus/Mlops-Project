@@ -14,6 +14,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY src/ ./src/
 COPY app.py .
 
-RUN mkdir -p models
+# Copy trained model artifacts
+COPY models/ ./models/
 
 CMD ["uvicorn", "src.api:app", "--host", "0.0.0.0", "--port", "8000"]
