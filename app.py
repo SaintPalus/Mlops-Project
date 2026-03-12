@@ -57,7 +57,7 @@ ITEM_UNIT_TH: dict[str, str] = {
 @st.cache_data(ttl=60)
 def fetch_items() -> list[str]:
     try:
-        resp = requests.get(f"{API_BASE}/items", timeout=3)
+        resp = requests.get(f"{API_BASE}/items", timeout=60)
         resp.raise_for_status()
         return resp.json()["items"]
     except Exception:
@@ -89,14 +89,14 @@ if st.button("พยากรณ์ความต้องการ", type="pri
     day_of_week = selected_date.weekday()
     is_weekend  = 1 if day_of_week >= 5 else 0
 
-    with st.spinner("กำลังคำนวณ..."):
+    with st.spinner("กำลังคำนวณ... (อาจใช้เวลา 30–60 วิ หาก Server เพิ่งเริ่มทำงาน)"):
         try:
             resp = requests.get(
                 f"{API_BASE}/predict",
                 params={"day_of_week": day_of_week, "is_weekend": is_weekend,
                         "item": selected_item, "month": selected_date.month,
                         "day": selected_date.day},
-                timeout=5,
+                timeout=60,
             )
             resp.raise_for_status()
             data = resp.json()
